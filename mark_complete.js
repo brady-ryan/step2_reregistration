@@ -7,7 +7,7 @@ function updateEboardQuizStatus() {
 
   // Get Columns E and F from Sheet1
   const idsColumnE = sheet1.getRange('E2:E' + lastRow).getValues().flat();
-  const idsPassed = sheet1.getRange('F2:F' + lastRow).getValues().flat().filter(x => x);
+  const idsPassed = sheet1.getRange('F1:F' + lastRow).getValues().flat().filter(x => x);
 
   // Load full data from Sheet1 (including header)
   const data1 = sheet1.getDataRange().getValues();
@@ -32,7 +32,7 @@ function updateEboardQuizStatus() {
     }
   }
 
-  const total = idsPassed.length;
+  const total = idsPassed.length + 200;
   let count = 0;
 
   for (const passedId of idsPassed) {
@@ -88,5 +88,5 @@ function updateEboardQuizStatus() {
   }
 
   SpreadsheetApp.flush();
-}
 
+}
