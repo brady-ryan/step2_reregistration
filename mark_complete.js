@@ -32,8 +32,9 @@ function updateEboardQuizStatus() {
     }
   }
 
-  const total = idsPassed.length + 200;
+  const total = idsPassed.length + 400;
   let count = 0;
+  let new_counts = 0;
 
   for (const passedId of idsPassed) {
     let foundMatch = false;
@@ -47,7 +48,7 @@ function updateEboardQuizStatus() {
         const position = row[3];
 
         if (!rawOrgName || !position) {
-          Logger.log(`⚠️ Missing org or position for ID ${passedId} at Sheet1 row ${indexInE + 2}`);
+          Logger.log(`Missing org or position for ID ${passedId} at Sheet1 row ${indexInE + 2}`);
           return;
         }
 
@@ -56,7 +57,6 @@ function updateEboardQuizStatus() {
         const targetColIndex = posCols[position];
 
         if (!targetRow || targetColIndex === -1) {
-          Logger.log(`⚠️ Could not map org "${rawOrgName}" or position "${position}" for ID ${passedId}`);
           return;
         }
 
@@ -66,13 +66,15 @@ function updateEboardQuizStatus() {
 
         if (currentValue === "") {
           cell.setValue("Quiz Complete");
+          new_counts = new_counts + 1;
         } else if (currentValue === "Eboard Form Complete") {
           cell.setValue("Quiz & Form Complete");
+          new_counts = new_counts + 1;
         }
 
         // Progress tracking
         count++;
-        if (count % 20 === 0 || count === total) {
+        if (count % 50 === 0 || count === total) {
           const progress = Math.floor((count / total) * 100);
           const barLength = 10;
           const filled = Math.floor(progress / 10);
@@ -83,9 +85,11 @@ function updateEboardQuizStatus() {
     });
 
     if (!foundMatch) {
-      Logger.log(`⚠️ ID ${passedId} not found in Column E of Sheet1`);
+      Logger.log(`ID ${passedId} not found in Column E of Sheet1`);
     }
   }
+
+  Logger.log(`${new_counts} new cells filled!`)
 
   SpreadsheetApp.flush();
 
